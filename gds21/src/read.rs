@@ -191,6 +191,9 @@ where
         self.source.read_exact(data)?;
         // Strip optional end-of-string chars
         let len = data.len();
+        if len == 0 {
+            return Ok("".to_string());
+        }
         if data[len - 1] == 0x00 {
             data = &mut data[0..len - 1];
         }
@@ -713,7 +716,11 @@ where
                     // XY coordinates must be a five-element array.
                     // First parse a generic [GdsRecord::Xy] to a vector,
                     // and then convert, checking length in the process.
-                    let v = GdsPoint::parse_vec(&d)?;
+                    let mut v = GdsPoint::parse_vec(&d)?;
+                    // some tools generate GDS files with invalid boxes containing only 4 points
+                    if v.len() == 4 {
+                        v.push(v[0].clone());
+                    }
                     let xy: [GdsPoint; 5] = match v.try_into() {
                         Ok(xy) => xy,
                         Err(_) => return self.fail("Invalid XY for GdsBox"),
