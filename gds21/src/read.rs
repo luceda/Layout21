@@ -533,6 +533,7 @@ where
                 | GdsRecord::Fonts(_)
                 | GdsRecord::AttrTable(_)
                 | GdsRecord::Generations(_)
+                | GdsRecord::Fonts(_)
                 | GdsRecord::Format(_) => {
                     return Err(GdsError::Unsupported(Some(r), Some(GdsContext::Library)))
                 }
