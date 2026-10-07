@@ -3,7 +3,6 @@
 //!
 
 // Std-Lib Imports
-compile_error!("FORCE_FAIL: Testing if this file is actually being compiled!");
 use std::convert::TryInto;
 use std::io::{Cursor, SeekFrom};
 use std::path::Path;
