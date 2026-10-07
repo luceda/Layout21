@@ -344,7 +344,7 @@ where
             match rtype {
                 GdsRecordType::EndLib => break,
                 GdsRecordType::BgnStruct => strukts.push(self.scan_struct()?),
-                _ => return self.fail(),
+                _ => return self.skip(),
             }
         }
         Ok(strukts)
