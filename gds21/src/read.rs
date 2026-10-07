@@ -341,10 +341,14 @@ where
         let mut strukts = Vec::<GdsStructScan>::with_capacity(1024);
         loop {
             let GdsRecordHeader { rtype, .. } = self.peek();
+            eprintln!("Trace [scan_lib]: Peeked record type {:?}", rtype);
             match rtype {
                 GdsRecordType::EndLib => break,
                 GdsRecordType::BgnStruct => strukts.push(self.scan_struct()?),
-                _ => return self.skip(),
+                _ => {
+                    eprintln!("Trace [scan_lib]: Skipping unhandled record {:?}", rtype);
+                    self.skip()?;
+                }
             }
         }
         Ok(strukts)
@@ -516,6 +520,7 @@ where
         // Iterate over all others
         loop {
             let r = self.next()?;
+            eprintln!("Trace [parse_lib]: Read record {:?}", r);
             lib = match r {
                 GdsRecord::EndLib => break, // End-of-library
                 GdsRecord::LibName(d) => lib.name(d),
