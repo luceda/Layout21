@@ -525,15 +525,19 @@ where
                     structs.push(strukt);
                     lib
                 }
+                // Safely ignore Fonts to prevent the parser from halting
+                GdsRecord::Fonts(f) => {
+                    eprintln!("Warning: Skipping unsupported GDS record: Fonts");
+                    lib
+                }
+
                 // Spec-valid but unsupported records
                 GdsRecord::LibDirSize(_)
                 | GdsRecord::SrfName(_)
                 | GdsRecord::LibSecur(_)
                 | GdsRecord::RefLibs(_)
-                | GdsRecord::Fonts(_)
                 | GdsRecord::AttrTable(_)
                 | GdsRecord::Generations(_)
-                | GdsRecord::Fonts(_)
                 | GdsRecord::Format(_) => {
                     return Err(GdsError::Unsupported(Some(r), Some(GdsContext::Library)))
                 }
