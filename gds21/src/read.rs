@@ -347,7 +347,9 @@ where
             match rtype {
                 GdsRecordType::EndLib => break,
                 GdsRecordType::BgnStruct => strukts.push(self.scan_struct()?),
-                _ => return self.fail(),
+                _ => {
+                    self.skip()?;
+                }
             }
         }
         Ok(strukts)
@@ -528,12 +530,17 @@ where
                     structs.push(strukt);
                     lib
                 }
+                // Safely ignore Fonts to prevent the parser from halting
+                GdsRecord::Fonts(f) => {
+                    eprintln!("Warning: Skipping unsupported GDS record: Fonts");
+                    lib
+                }
+
                 // Spec-valid but unsupported records
                 GdsRecord::LibDirSize(_)
                 | GdsRecord::SrfName(_)
                 | GdsRecord::LibSecur(_)
                 | GdsRecord::RefLibs(_)
-                | GdsRecord::Fonts(_)
                 | GdsRecord::AttrTable(_)
                 | GdsRecord::Generations(_)
                 | GdsRecord::Format(_) => {
